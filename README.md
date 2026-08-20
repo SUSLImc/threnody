@@ -4,7 +4,7 @@
 
 Threnody is a configurable, server-authoritative horror mod for Minecraft Java 1.20.1. It is built to create sustained tension instead of scripted jump scares: the entity tracks encounter history per player, adapts its threat profile as it evolves, and uses the environment to close the distance.
 
-[Project website](index.html) · [Download the latest build](build/libs/threnody-0.1.0.jar)
+[Project website](https://suslimc.github.io/threnody/) · [Download the latest release](https://github.com/SUSLImc/threnody/releases/latest)
 
 ## Current gameplay
 
