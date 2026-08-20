@@ -12,20 +12,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 
+/**
+ * Bounded, decaying record of what each player has done to Threnody.
+ * Recent and violent encounters raise that player's priority the next time it hunts.
+ */
 public final class PlayerMemory {
     private static final String MEMORY_KEY = "ThrenodyMemory";
     private static final String ENTRIES_KEY = "Encounters";
-    private static final String TRANSGRESSIONS_KEY = "Transgressions";
     private static final String GAME_TIME_KEY = "GameTime";
     private static final String THREAT_KEY = "Threat";
-    private static final String REASON_KEY = "Reason";
 
     private PlayerMemory() {
     }
 
     public static void recordEncounter(ServerPlayer player, BlockPos location, int threat) {
         CompoundTag memory = getMemory(player);
-        ListTag entries = memory.getList(ENTRIES_KEY, Tag.TAG_COMPOUND);
+        ListTag entries = getActiveEntries(player);
+
         CompoundTag entry = new CompoundTag();
         entry.putLong("Location", location.asLong());
         entry.putLong(GAME_TIME_KEY, player.level().getGameTime());
@@ -50,55 +53,16 @@ public final class PlayerMemory {
                 .orElse(null);
     }
 
+    public static int threatOf(ServerPlayer player) {
+        int threat = 0;
+        for (Tag tag : getActiveEntries(player)) {
+            threat += ((CompoundTag) tag).getInt(THREAT_KEY);
+        }
+        return threat;
+    }
+
     private static double targetScore(ServerPlayer player, ThrenodyEntity entity) {
-        ListTag entries = getActiveEntries(player);
-        int rememberedThreat = 0;
-        for (Tag tag : entries) {
-            rememberedThreat += ((CompoundTag) tag).getInt(THREAT_KEY);
-        }
-        int transgressions = getTransgressionCount(player);
-        return rememberedThreat * 8.0D + transgressions * 40.0D - Math.sqrt(player.distanceToSqr(entity));
-    }
-
-    /**
-     * Records a broken survival covenant, such as entering creative mode or running a cheat command.
-     *
-     * @return the number of transgressions the player has accumulated within the forgiveness window
-     */
-    public static int recordTransgression(ServerPlayer player, String reason) {
-        CompoundTag memory = getMemory(player);
-        ListTag transgressions = getActiveTransgressions(player);
-
-        CompoundTag entry = new CompoundTag();
-        entry.putLong(GAME_TIME_KEY, player.level().getGameTime());
-        entry.putString(REASON_KEY, reason);
-        transgressions.add(entry);
-
-        int capacity = ThrenodyConfig.COMMON.memoryCapacity.get();
-        while (transgressions.size() > capacity) {
-            transgressions.remove(0);
-        }
-
-        memory.put(TRANSGRESSIONS_KEY, transgressions);
-        return transgressions.size();
-    }
-
-    public static int getTransgressionCount(ServerPlayer player) {
-        return getActiveTransgressions(player).size();
-    }
-
-    public static void forgive(ServerPlayer player) {
-        getMemory(player).put(TRANSGRESSIONS_KEY, new ListTag());
-    }
-
-    private static ListTag getActiveTransgressions(ServerPlayer player) {
-        CompoundTag memory = getMemory(player);
-        ListTag transgressions = memory.getList(TRANSGRESSIONS_KEY, Tag.TAG_COMPOUND);
-        long now = player.level().getGameTime();
-        long decayTicks = ThrenodyConfig.COMMON.judgmentForgivenessMinutes.get() * 1_200L;
-        transgressions.removeIf(tag -> now - ((CompoundTag) tag).getLong(GAME_TIME_KEY) > decayTicks);
-        memory.put(TRANSGRESSIONS_KEY, transgressions);
-        return transgressions;
+        return threatOf(player) * 8.0D - Math.sqrt(player.distanceToSqr(entity));
     }
 
     private static ListTag getActiveEntries(ServerPlayer player) {

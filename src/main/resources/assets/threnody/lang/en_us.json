@@ -1,7 +1,12 @@
 {
   "entity.threnody.threnody": "Threnody",
-  "threnody.judgment.noticed": "The dark shifts. Something noticed what you just did.",
-  "threnody.judgment.marked": "You have been marked. It knows where you are standing.",
-  "threnody.judgment.hunted": "The covenant is broken. Threnody is coming for you.",
-  "threnody.judgment.reverted": "Survival is not optional. You were pulled back."
+  "subtitles.threnody.drone": "Something hums beneath the ground",
+  "subtitles.threnody.heartbeat": "Your heartbeat",
+  "subtitles.threnody.whisper": "Breathing, close by",
+  "subtitles.threnody.seen": "You have been seen",
+  "subtitles.threnody.shriek": "Threnody shrieks",
+  "subtitles.threnody.chase": "Something is running",
+  "subtitles.threnody.step": "Heavy footstep",
+  "subtitles.threnody.vanish": "Something leaves",
+  "subtitles.threnody.knock": "A knock in the dark"
 }

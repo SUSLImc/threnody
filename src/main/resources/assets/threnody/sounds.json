@@ -1,0 +1,47 @@
+{
+  "threnody.drone": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.drone",
+    "sounds": [{ "name": "threnody:drone", "stream": true }]
+  },
+  "threnody.heartbeat": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.heartbeat",
+    "sounds": ["threnody:heartbeat"]
+  },
+  "threnody.whisper": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.whisper",
+    "sounds": ["threnody:whisper"]
+  },
+  "threnody.seen": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.seen",
+    "sounds": ["threnody:seen"]
+  },
+  "threnody.shriek": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.shriek",
+    "sounds": ["threnody:shriek"]
+  },
+  "threnody.chase": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.chase",
+    "sounds": ["threnody:chase"]
+  },
+  "threnody.step": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.step",
+    "sounds": ["threnody:step"]
+  },
+  "threnody.vanish": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.vanish",
+    "sounds": ["threnody:vanish"]
+  },
+  "threnody.knock": {
+    "category": "hostile",
+    "subtitle": "subtitles.threnody.knock",
+    "sounds": ["threnody:knock"]
+  }
+}

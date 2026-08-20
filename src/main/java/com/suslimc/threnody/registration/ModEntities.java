@@ -13,8 +13,9 @@ public final class ModEntities {
 
     public static final RegistryObject<EntityType<ThrenodyEntity>> THRENODY = ENTITIES.register("threnody",
             () -> EntityType.Builder.of(ThrenodyEntity::new, MobCategory.MONSTER)
-                    .sized(0.6F, 1.95F)
-                    .clientTrackingRange(8)
+                    .sized(0.7F, 2.85F)
+                    .clientTrackingRange(10)
+                    .fireImmune()
                     .build(ThrenodyMod.MODID + ":threnody")
     );
 

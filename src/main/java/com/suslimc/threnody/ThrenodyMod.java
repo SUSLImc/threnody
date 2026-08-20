@@ -3,6 +3,7 @@ package com.suslimc.threnody;
 import com.suslimc.threnody.config.ThrenodyConfig;
 import com.suslimc.threnody.entity.ThrenodyEntity;
 import com.suslimc.threnody.registration.ModEntities;
+import com.suslimc.threnody.registration.ModSounds;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -21,6 +22,7 @@ public class ThrenodyMod {
     public ThrenodyMod(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         ModEntities.ENTITIES.register(bus);
+        ModSounds.SOUNDS.register(bus);
         ThrenodyConfig.register(context);
         bus.addListener(this::registerAttributes);
         bus.addListener(this::registerSpawnPlacements);

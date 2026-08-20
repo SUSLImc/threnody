@@ -32,7 +32,7 @@ public class ThrenodyRenderer extends GeoEntityRenderer<ThrenodyEntity> {
             float blue,
             float alpha
     ) {
-        float stageScale = 0.94F + animatable.getStage().getId() * 0.045F;
+        float stageScale = 0.97F + animatable.getStage().getId() * 0.028F;
         poseStack.scale(stageScale, stageScale, stageScale);
 
         super.preRender(
