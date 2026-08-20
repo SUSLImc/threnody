@@ -1,0 +1,12 @@
+.gradle/
+build/
+build - kopia/
+bin/
+out/
+run/
+run-data/
+*.log
+*.tmp
+/.idea/
+*.iml
+local.properties

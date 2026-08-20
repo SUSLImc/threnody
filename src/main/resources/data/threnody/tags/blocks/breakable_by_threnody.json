@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "#minecraft:dirt",
+    "#minecraft:planks",
+    "minecraft:glass",
+    "minecraft:glass_pane"
+  ]
+}

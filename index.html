@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07090a">
+    <meta name="description" content="Threnody is an adaptive horror entity for Minecraft Forge 1.20.1. It remembers, hunts, evolves, and disappears with the dawn.">
+    <title>Threnody | The night remembers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07090a;
+            --surface: #0d1112;
+            --surface-2: #111719;
+            --line: #253033;
+            --muted: #849094;
+            --text: #e9efed;
+            --accent: #d65148;
+            --accent-bright: #ff796c;
+            --green: #9bbbab;
+            --max: 1180px;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 75% 10%, rgba(111, 35, 34, .23), transparent 30rem),
+                radial-gradient(circle at 15% 55%, rgba(30, 75, 66, .1), transparent 28rem),
+                var(--bg);
+            font-family: "Manrope", sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+            background-size: 44px 44px;
+            content: "";
+            inset: 0;
+            mask-image: linear-gradient(to bottom, black, transparent 75%);
+            pointer-events: none;
+            position: fixed;
+            z-index: -1;
+        }
+
+        a { color: inherit; }
+        .wrap { margin: 0 auto; max-width: var(--max); padding: 0 28px; }
+        .mono, .eyebrow, code, pre { font-family: "DM Mono", monospace; }
+        .eyebrow { color: var(--accent-bright); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; }
+
+        header { border-bottom: 1px solid rgba(255,255,255,.08); position: relative; }
+        nav { align-items: center; display: flex; justify-content: space-between; min-height: 76px; }
+        .brand { align-items: center; display: flex; font-size: .86rem; font-weight: 800; gap: 12px; letter-spacing: .13em; text-decoration: none; text-transform: uppercase; }
+        .brand-mark { border: 1px solid var(--accent); display: grid; height: 26px; place-items: center; transform: rotate(45deg); width: 26px; }
+        .brand-mark::after { background: var(--accent); content: ""; height: 7px; width: 7px; }
+        .brand-mark::after, .brand-mark { box-shadow: 0 0 18px rgba(214,81,72,.38); }
+        .brand span { transform: translateX(1px); }
+        nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+        nav a { color: var(--muted); font-size: .78rem; text-decoration: none; }
+        nav a:hover, nav a:focus-visible { color: var(--text); }
+
+        .hero { min-height: 650px; padding: 120px 0 110px; position: relative; }
+        .hero::after {
+            background: linear-gradient(90deg, transparent 0%, rgba(214,81,72,.55) 50%, transparent 100%);
+            bottom: 0; content: ""; height: 1px; left: 0; opacity: .5; position: absolute; width: 100%;
+        }
+        .hero-grid { align-items: end; display: grid; gap: 60px; grid-template-columns: minmax(0, 1fr) minmax(280px, 400px); }
+        h1 { font-size: clamp(4rem, 11vw, 8.5rem); letter-spacing: -.09em; line-height: .82; margin: 22px 0 30px; max-width: 760px; }
+        .hero-copy { color: #b3bfbc; font-size: clamp(1.05rem, 2vw, 1.35rem); max-width: 600px; }
+        .hero-copy strong { color: var(--text); font-weight: 600; }
+        .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+        .button { align-items: center; border: 1px solid var(--line); display: inline-flex; font-size: .78rem; font-weight: 700; gap: 10px; justify-content: center; letter-spacing: .08em; min-height: 48px; padding: 0 20px; text-decoration: none; text-transform: uppercase; transition: .2s ease; }
+        .button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .button.primary:hover, .button.primary:focus-visible { background: var(--accent-bright); border-color: var(--accent-bright); transform: translateY(-2px); }
+        .button.ghost:hover, .button.ghost:focus-visible { border-color: var(--muted); background: var(--surface-2); }
+
+        .signal { background: rgba(13,17,18,.75); border: 1px solid var(--line); padding: 26px; position: relative; }
+        .signal::before { background: var(--accent); content: ""; height: 6px; left: -1px; position: absolute; top: -1px; width: 48px; }
+        .signal-head { align-items: center; display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .signal-title { color: var(--muted); font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; }
+        .status { align-items: center; color: var(--green); display: flex; font-family: "DM Mono", monospace; font-size: .7rem; gap: 8px; }
+        .status::before { background: var(--green); border-radius: 50%; box-shadow: 0 0 12px var(--green); content: ""; height: 6px; width: 6px; }
+        .signal h2 { font-size: 2.4rem; letter-spacing: -.06em; line-height: 1; margin: 0 0 12px; }
+        .signal p { color: var(--muted); font-size: .85rem; margin: 0; }
+        .signal-line { background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 9px); height: 30px; margin: 28px 0 12px; opacity: .7; }
+        .signal-meta { color: var(--muted); display: flex; font-family: "DM Mono", monospace; font-size: .66rem; justify-content: space-between; }
+
+        section { padding: 115px 0; }
+        .section-head { align-items: end; display: flex; gap: 30px; justify-content: space-between; margin-bottom: 44px; }
+        h2 { font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: -.07em; line-height: 1; margin: 10px 0 0; }
+        .section-intro { color: var(--muted); font-size: .95rem; max-width: 390px; }
+
+        .stats { border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); }
+        .stat { border-right: 1px solid var(--line); padding: 26px 22px; }
+        .stat:last-child { border: 0; }
+        .stat strong { display: block; font-size: 2.3rem; letter-spacing: -.07em; line-height: 1; }
+        .stat span { color: var(--muted); display: block; font-family: "DM Mono", monospace; font-size: .65rem; letter-spacing: .06em; margin-top: 10px; text-transform: uppercase; }
+
+        .stages { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); }
+        .stage { background: linear-gradient(135deg, rgba(17,23,25,.94), rgba(9,12,13,.94)); border: 1px solid var(--line); min-height: 225px; padding: 24px; position: relative; transition: border-color .2s, transform .2s; }
+        .stage:hover { border-color: #5e4542; transform: translateY(-4px); }
+        .stage-number { color: var(--accent); font-family: "DM Mono", monospace; font-size: .72rem; }
+        .stage h3 { font-size: 1.35rem; letter-spacing: -.04em; margin: 28px 0 8px; }
+        .stage p { color: var(--muted); font-size: .86rem; margin: 0; }
+        .stage::after { bottom: 20px; color: rgba(255,255,255,.08); content: "0" attr(data-stage); font-family: "DM Mono", monospace; font-size: 4rem; line-height: 1; position: absolute; right: 20px; }
+
+        .feature-grid { display: grid; gap: 1px; grid-template-columns: repeat(3, 1fr); }
+        .feature { background: var(--surface); border: 1px solid var(--line); margin: -1px 0 0 -1px; padding: 30px; }
+        .feature-icon { color: var(--accent-bright); font-family: "DM Mono", monospace; font-size: .9rem; }
+        .feature h3 { font-size: 1.1rem; margin: 23px 0 8px; }
+        .feature p { color: var(--muted); font-size: .85rem; margin: 0; }
+
+        .install { background: var(--surface); border: 1px solid var(--line); display: grid; gap: 48px; grid-template-columns: .8fr 1.2fr; padding: 42px; }
+        .install h2 { font-size: 2.2rem; }
+        .install p { color: var(--muted); font-size: .9rem; }
+        .steps { display: grid; gap: 15px; }
+        .step { align-items: start; border-bottom: 1px solid var(--line); display: grid; gap: 18px; grid-template-columns: 32px 1fr; padding: 0 0 15px; }
+        .step:last-child { border: 0; }
+        .step-number { color: var(--accent-bright); font-family: "DM Mono", monospace; font-size: .8rem; }
+        .step p { color: var(--text); margin: 0; }
+        code { color: var(--green); font-size: .82em; }
+
+        .config { display: grid; gap: 40px; grid-template-columns: 1fr 1fr; }
+        pre { background: #050707; border: 1px solid var(--line); color: var(--green); font-size: .78rem; line-height: 1.8; margin: 0; overflow-x: auto; padding: 24px; }
+        .config p { color: var(--muted); font-size: .9rem; }
+        .config-list { color: var(--muted); font-size: .86rem; list-style: none; margin: 28px 0 0; padding: 0; }
+        .config-list li { border-top: 1px solid var(--line); padding: 12px 0; }
+        .config-list li::before { color: var(--accent); content: "—"; margin-right: 10px; }
+
+        footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .78rem; padding: 34px 0 44px; }
+        .footer-row { align-items: center; display: flex; justify-content: space-between; }
+        .footer-row a { color: var(--text); text-decoration: none; }
+
+        @media (max-width: 800px) {
+            nav ul { gap: 13px; }
+            .hero { padding: 85px 0 75px; }
+            .hero-grid, .install, .config { grid-template-columns: 1fr; }
+            .hero-grid { gap: 45px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .stat:nth-child(2) { border-right: 0; }
+            .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+            .stages, .feature-grid { grid-template-columns: 1fr; }
+            .section-head { align-items: start; flex-direction: column; }
+        }
+        @media (max-width: 500px) {
+            .wrap { padding: 0 18px; }
+            nav { min-height: 65px; }
+            nav ul { display: none; }
+            h1 { font-size: 4.2rem; }
+            .hero { min-height: auto; }
+            section { padding: 80px 0; }
+            .install { padding: 26px; }
+            .footer-row { align-items: start; flex-direction: column; gap: 12px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap">
+            <nav aria-label="Primary navigation">
+                <a class="brand" href="#" aria-label="Threnody home">
+                    <span class="brand-mark" aria-hidden="true"></span><span>Threnody</span>
+                </a>
+                <ul>
+                    <li><a href="#stages">Stages</a></li>
+                    <li><a href="#systems">Systems</a></li>
+                    <li><a href="#install">Install</a></li>
+                    <li><a href="README.md">Documentation</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="wrap hero-grid">
+                <div>
+                    <div class="eyebrow">Forge 1.20.1 / Open source horror</div>
+                    <h1>The night<br><span style="color:var(--accent)">remembers.</span></h1>
+                    <p class="hero-copy"><strong>Threnody</strong> is an adaptive horror entity for Minecraft. It learns from encounters, evolves through six forms, and turns familiar terrain into a liability.</p>
+                    <div class="actions">
+                        <a class="button primary" href="build/libs/threnody-0.1.0.jar">Download v0.1.0 <span aria-hidden="true">↗</span></a>
+                        <a class="button ghost" href="#install">Read the briefing</a>
+                    </div>
+                </div>
+                <aside class="signal" aria-label="Threnody system status">
+                    <div class="signal-head"><span class="signal-title">Encounter monitor</span><span class="status">active</span></div>
+                    <h2>Something<br>is listening.</h2>
+                    <p>Night cycle detected. Player memory is online. Dawn is the only known exit.</p>
+                    <div class="signal-line" aria-hidden="true"></div>
+                    <div class="signal-meta"><span>THR / 001</span><span>DO NOT LOOK BACK</span></div>
+                </aside>
+            </div>
+        </section>
+
+        <section style="padding-bottom:0">
+            <div class="wrap stats" aria-label="Project facts">
+                <div class="stat"><strong>06</strong><span>adaptive stages</span></div>
+                <div class="stat"><strong>01</strong><span>server-authoritative entity</span></div>
+                <div class="stat"><strong>17</strong><span>required Java version</span></div>
+                <div class="stat"><strong>47.x</strong><span>Forge line</span></div>
+            </div>
+        </section>
+
+        <section id="stages">
+            <div class="wrap">
+                <div class="section-head">
+                    <div><div class="eyebrow">The progression</div><h2>Every night makes<br>it worse.</h2></div>
+                    <p class="section-intro">Threnody is not a collection of skins. Each stage changes the threat profile, movement, attack strength, vulnerabilities, and the way it occupies the world.</p>
+                </div>
+                <div class="stages">
+                    <article class="stage" data-stage="1"><span class="stage-number">STAGE 01</span><h3>Stalker</h3><p>The base form. Quiet, patient, and fast enough to punish an exposed player.</p></article>
+                    <article class="stage" data-stage="2"><span class="stage-number">STAGE 02</span><h3>Crawler</h3><p>Climbs when blocked and turns close-quarters encounters into a slowing attack.</p></article>
+                    <article class="stage" data-stage="3"><span class="stage-number">STAGE 03</span><h3>Squeeze</h3><p>A compact collision profile lets it slip through one-block-high openings.</p></article>
+                    <article class="stage" data-stage="4"><span class="stage-number">STAGE 04</span><h3>Breaker</h3><p>Respects mob griefing and a curated block tag while dismantling the route ahead.</p></article>
+                    <article class="stage" data-stage="5"><span class="stage-number">STAGE 05</span><h3>Huntmaster</h3><p>Stronger, quicker, and able to push darkness into the player's field of view.</p></article>
+                    <article class="stage" data-stage="6"><span class="stage-number">STAGE 06</span><h3>Eschaton</h3><p>The final escalation: climbing, breaking, pressure, and a soul-lit warning.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section id="systems">
+            <div class="wrap">
+                <div class="section-head">
+                    <div><div class="eyebrow">Under the surface</div><h2>Built for tension,<br>not noise.</h2></div>
+                    <p class="section-intro">Designed to keep multiplayer safe and performance predictable while making the threat feel personal.</p>
+                </div>
+                <div class="feature-grid">
+                    <article class="feature"><div class="feature-icon">01 / MEMORY</div><h3>It remembers you</h3><p>Encounter history is stored per player in persistent NBT, bounded by capacity, and aged out through configurable decay.</p></article>
+                    <article class="feature"><div class="feature-icon">02 / WORLD</div><h3>The world is a route</h3><p>Climbing, squeezing, and controlled block breaking let the entity pressure familiar defenses without unrestricted griefing.</p></article>
+                    <article class="feature"><div class="feature-icon">03 / SERVER</div><h3>The server stays in charge</h3><p>Target selection, stage changes, effects, and environmental interactions are authoritative and throttled for multiplayer.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section id="install">
+            <div class="wrap">
+                <div class="install">
+                    <div>
+                        <div class="eyebrow">Deployment briefing</div>
+                        <h2>Invite it in.</h2>
+                        <p>Install the same jar on the client and server, then let the first night begin. Threnody has no runtime dependency beyond Forge.</p>
+                        <a class="button primary" href="README.md">Open full documentation</a>
+                    </div>
+                    <div class="steps">
+                        <div class="step"><span class="step-number">01</span><p>Install <strong>Forge 47.x</strong> for Minecraft Java 1.20.1.</p></div>
+                        <div class="step"><span class="step-number">02</span><p>Place <code>threnody-0.1.0.jar</code> in the <code>mods</code> folder on both sides.</p></div>
+                        <div class="step"><span class="step-number">03</span><p>Start once to generate <code>config/threnody-common.toml</code>.</p></div>
+                        <div class="step"><span class="step-number">04</span><p>Wait for night—or test with <code>/summon threnody:threnody</code>.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap config">
+                <div>
+                    <div class="eyebrow">Tuning the fear</div>
+                    <h2>Your world.<br>Your threshold.</h2>
+                    <p>Keep the pressure cinematic or make survival nearly impossible. The common config controls spawning, memory, decay, and block-breaking behavior.</p>
+                    <ul class="config-list">
+                        <li>Night-only spawning with a configurable light threshold</li>
+                        <li>Bounded encounter memory per player</li>
+                        <li>Configurable memory decay in minutes</li>
+                        <li>Independent block-breaking safety switch</li>
+                    </ul>
+                </div>
+                <pre aria-label="Configuration example"># config/threnody-common.toml
+[spawn]
+spawnEnabled = true
+spawnLightThreshold = 7
+
+[memory]
+memoryCapacity = 128
+memoryDecayMinutes = 60
+
+[performance]
+disableBlockBreaking = false</pre>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap footer-row">
+            <span>THRENODY / adaptive horror for Forge 1.20.1</span>
+            <a href="README.md">View source &amp; documentation ↗</a>
+        </div>
+    </footer>
+</body>
+</html>
