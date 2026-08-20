@@ -50,10 +50,19 @@ sourceSets.main.resources {
 }
 
 repositories {
+    maven {
+        name = 'GeckoLib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex 'software\\.bernie.*'
+            includeGroup 'com.eliotlash.mclib'
+        }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -63,6 +72,7 @@ tasks.named('processResources', ProcessResources).configure {
             forge_version          : forge_version,
             forge_version_range    : forge_version_range,
             loader_version_range   : loader_version_range,
+            geckolib_version       : geckolib_version,
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_license            : mod_license,

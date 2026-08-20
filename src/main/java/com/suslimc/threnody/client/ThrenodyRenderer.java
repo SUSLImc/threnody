@@ -1,38 +1,54 @@
 package com.suslimc.threnody.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.suslimc.threnody.ThrenodyMod;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.suslimc.threnody.entity.ThrenodyEntity;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
-public final class ThrenodyRenderer extends MobRenderer<ThrenodyEntity, HumanoidModel<ThrenodyEntity>> {
-    private static final ResourceLocation[] TEXTURES = new ResourceLocation[6];
-
-    static {
-        for (int stage = 0; stage < TEXTURES.length; stage++) {
-            TEXTURES[stage] = ResourceLocation.fromNamespaceAndPath(
-                    ThrenodyMod.MODID,
-                    "textures/entity/threnody_stage" + stage + ".png"
-            );
-        }
-    }
-
+public class ThrenodyRenderer extends GeoEntityRenderer<ThrenodyEntity> {
     public ThrenodyRenderer(EntityRendererProvider.Context context) {
-        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE)), 0.5F);
+        super(context, new ThrenodyGeoModel());
+        this.shadowRadius = 0.55F;
+        addRenderLayer(new AutoGlowingGeoLayer<>(this));
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ThrenodyEntity entity) {
-        return TEXTURES[entity.getStage().getId()];
-    }
+    public void preRender(
+            PoseStack poseStack,
+            ThrenodyEntity animatable,
+            BakedGeoModel model,
+            MultiBufferSource bufferSource,
+            VertexConsumer buffer,
+            boolean isReRender,
+            float partialTick,
+            int packedLight,
+            int packedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha
+    ) {
+        float stageScale = 0.94F + animatable.getStage().getId() * 0.045F;
+        poseStack.scale(stageScale, stageScale, stageScale);
 
-    @Override
-    protected void scale(ThrenodyEntity entity, PoseStack poseStack, float partialTick) {
-        float scale = 0.9F + entity.getStage().getId() * 0.05F;
-        poseStack.scale(scale, scale, scale);
+        super.preRender(
+                poseStack,
+                animatable,
+                model,
+                bufferSource,
+                buffer,
+                isReRender,
+                partialTick,
+                packedLight,
+                packedOverlay,
+                red,
+                green,
+                blue,
+                alpha
+        );
     }
 }

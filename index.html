@@ -136,6 +136,17 @@
         .footer-row { align-items: center; display: flex; justify-content: space-between; }
         .footer-row a { color: var(--text); text-decoration: none; }
 
+        .ladder { display: grid; gap: 1px; }
+        .rung { align-items: start; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 26px; grid-template-columns: 150px 1fr; margin: -1px 0 0; padding: 26px 28px; }
+        .rung-label { color: var(--accent-bright); font-family: "DM Mono", monospace; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+        .rung h3 { font-size: 1.15rem; margin: 0 0 6px; }
+        .rung p { color: var(--muted); font-size: .88rem; margin: 0; }
+        .rung:last-child { border-color: #5e3a37; }
+
+        .verdict { background: linear-gradient(135deg, rgba(64,20,19,.5), rgba(13,17,18,.9)); border: 1px solid #5e3a37; margin-top: 40px; padding: 32px; }
+        .verdict p { color: #e6d4d2; font-size: 1.02rem; margin: 0; }
+        .verdict strong { color: #fff; }
+
         @media (max-width: 800px) {
             nav ul { gap: 13px; }
             .hero { padding: 85px 0 75px; }
@@ -145,6 +156,7 @@
             .stat:nth-child(2) { border-right: 0; }
             .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
             .stages, .feature-grid { grid-template-columns: 1fr; }
+            .rung { gap: 8px; grid-template-columns: 1fr; }
             .section-head { align-items: start; flex-direction: column; }
         }
         @media (max-width: 500px) {
@@ -172,6 +184,7 @@
                 <ul>
                     <li><a href="#stages">Stages</a></li>
                     <li><a href="#systems">Systems</a></li>
+                    <li><a href="#judgment">Judgment</a></li>
                     <li><a href="#install">Install</a></li>
                     <li><a href="README.md">Documentation</a></li>
                 </ul>
@@ -185,7 +198,7 @@
                 <div>
                     <div class="eyebrow">Forge 1.20.1 / Open source horror</div>
                     <h1>The night<br><span style="color:var(--accent)">remembers.</span></h1>
-                    <p class="hero-copy"><strong>Threnody</strong> is an adaptive horror entity for Minecraft. It learns from encounters, evolves through six forms, and turns familiar terrain into a liability.</p>
+                    <p class="hero-copy"><strong>Threnody</strong> is an adaptive horror entity for Minecraft. It learns from encounters, evolves through six animated forms, and punishes anyone who tries to cheat their way out of survival.</p>
                     <div class="actions">
                         <a class="button primary" href="build/libs/threnody-0.1.0.jar">Download v0.1.0 <span aria-hidden="true">↗</span></a>
                         <a class="button ghost" href="#install">Read the briefing</a>
@@ -204,8 +217,8 @@
         <section style="padding-bottom:0">
             <div class="wrap stats" aria-label="Project facts">
                 <div class="stat"><strong>06</strong><span>adaptive stages</span></div>
-                <div class="stat"><strong>01</strong><span>server-authoritative entity</span></div>
-                <div class="stat"><strong>17</strong><span>required Java version</span></div>
+                <div class="stat"><strong>08</strong><span>custom animations</span></div>
+                <div class="stat"><strong>03</strong><span>judgment tiers</span></div>
                 <div class="stat"><strong>47.x</strong><span>Forge line</span></div>
             </div>
         </section>
@@ -237,6 +250,44 @@
                     <article class="feature"><div class="feature-icon">01 / MEMORY</div><h3>It remembers you</h3><p>Encounter history is stored per player in persistent NBT, bounded by capacity, and aged out through configurable decay.</p></article>
                     <article class="feature"><div class="feature-icon">02 / WORLD</div><h3>The world is a route</h3><p>Climbing, squeezing, and controlled block breaking let the entity pressure familiar defenses without unrestricted griefing.</p></article>
                     <article class="feature"><div class="feature-icon">03 / SERVER</div><h3>The server stays in charge</h3><p>Target selection, stage changes, effects, and environmental interactions are authoritative and throttled for multiplayer.</p></article>
+                    <article class="feature"><div class="feature-icon">04 / MOTION</div><h3>It moves like something wrong</h3><p>A custom skeleton with a hinged jaw and oversized limbs drives eight hand-authored GeckoLib animations, from a patient idle to a full crawl.</p></article>
+                    <article class="feature"><div class="feature-icon">05 / BLENDING</div><h3>Two animation layers</h3><p>A looping movement controller carries locomotion while a triggered action controller plays attacks, screams, and transformations over the top.</p></article>
+                    <article class="feature"><div class="feature-icon">06 / LIGHT</div><h3>The eyes keep burning</h3><p>Every stage has its own texture and emissive glow mask, so eyes, teeth, and veins grow brighter as the entity evolves.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section id="judgment">
+            <div class="wrap">
+                <div class="section-head">
+                    <div><div class="eyebrow">The covenant</div><h2>Cheat, and it<br>comes for you.</h2></div>
+                    <p class="section-intro">Threnody treats survival as a binding agreement. Slip into creative mode or conjure items with commands and it drags you back — then it stops waiting for nightfall.</p>
+                </div>
+                <div class="ladder">
+                    <article class="rung">
+                        <span class="rung-label">First offense</span>
+                        <div>
+                            <h3>Something noticed</h3>
+                            <p>You are pulled back into survival, the light drains out of the world, and a warning arrives that you were seen.</p>
+                        </div>
+                    </article>
+                    <article class="rung">
+                        <span class="rung-label">Second offense</span>
+                        <div>
+                            <h3>You are marked</h3>
+                            <p>Blindness and nausea set in, and any Threnody within range is enraged and redirected straight to your position.</p>
+                        </div>
+                    </article>
+                    <article class="rung">
+                        <span class="rung-label">Third and beyond</span>
+                        <div>
+                            <h3>The covenant is broken</h3>
+                            <p>Weakness takes hold and Threnody is summoned beside you — enraged, ignoring daylight, and no longer interested in stalking.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="verdict">
+                    <p><strong>Every transgression is remembered.</strong> Offenses are written into persistent player data, raise your targeting priority above everyone else's, and are only forgiven after the configured time. Operators can be exempted, and the entire system can be switched off.</p>
                 </div>
             </div>
         </section>
@@ -247,14 +298,15 @@
                     <div>
                         <div class="eyebrow">Deployment briefing</div>
                         <h2>Invite it in.</h2>
-                        <p>Install the same jar on the client and server, then let the first night begin. Threnody has no runtime dependency beyond Forge.</p>
+                        <p>Install Threnody and GeckoLib on the client and server, then let the first night begin.</p>
                         <a class="button primary" href="README.md">Open full documentation</a>
                     </div>
                     <div class="steps">
                         <div class="step"><span class="step-number">01</span><p>Install <strong>Forge 47.x</strong> for Minecraft Java 1.20.1.</p></div>
-                        <div class="step"><span class="step-number">02</span><p>Place <code>threnody-0.1.0.jar</code> in the <code>mods</code> folder on both sides.</p></div>
-                        <div class="step"><span class="step-number">03</span><p>Start once to generate <code>config/threnody-common.toml</code>.</p></div>
-                        <div class="step"><span class="step-number">04</span><p>Wait for night—or test with <code>/summon threnody:threnody</code>.</p></div>
+                        <div class="step"><span class="step-number">02</span><p>Add <strong>GeckoLib 4.8.4+</strong> to the <code>mods</code> folder.</p></div>
+                        <div class="step"><span class="step-number">03</span><p>Place <code>threnody-0.1.0.jar</code> in the <code>mods</code> folder on both sides.</p></div>
+                        <div class="step"><span class="step-number">04</span><p>Start once to generate <code>config/threnody-common.toml</code>.</p></div>
+                        <div class="step"><span class="step-number">05</span><p>Wait for night—or test with <code>/summon threnody:threnody</code>.</p></div>
                     </div>
                 </div>
             </div>
@@ -271,6 +323,7 @@
                         <li>Bounded encounter memory per player</li>
                         <li>Configurable memory decay in minutes</li>
                         <li>Independent block-breaking safety switch</li>
+                        <li>Full control over judgment, watched commands, and operator exemptions</li>
                     </ul>
                 </div>
                 <pre aria-label="Configuration example"># config/threnody-common.toml
@@ -283,7 +336,15 @@ memoryCapacity = 128
 memoryDecayMinutes = 60
 
 [performance]
-disableBlockBreaking = false</pre>
+disableBlockBreaking = false
+
+[judgment]
+judgmentEnabled = true
+judgmentRevertGameMode = true
+judgmentWatchCommands = true
+judgmentExemptOperators = false
+judgmentSummonOnRepeatOffense = true
+judgmentForgivenessMinutes = 30</pre>
             </div>
         </section>
     </main>

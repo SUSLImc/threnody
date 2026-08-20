@@ -11,6 +11,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -40,10 +43,35 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ThrenodyEntity extends Monster {
+public class ThrenodyEntity extends Monster implements GeoEntity {
+    public static final String ACTION_CONTROLLER = "action";
+    public static final String ANIM_ATTACK = "attack";
+    public static final String ANIM_SCREAM = "scream";
+    public static final String ANIM_TRANSFORM = "transform";
+    public static final String ANIM_JUDGMENT = "judgment";
+
+    private static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.threnody.idle");
+    private static final RawAnimation WALK_ANIM = RawAnimation.begin().thenLoop("animation.threnody.walk");
+    private static final RawAnimation RUN_ANIM = RawAnimation.begin().thenLoop("animation.threnody.run");
+    private static final RawAnimation CRAWL_ANIM = RawAnimation.begin().thenLoop("animation.threnody.crawl");
+    private static final RawAnimation ATTACK_ANIM = RawAnimation.begin().thenPlay("animation.threnody.attack");
+    private static final RawAnimation SCREAM_ANIM = RawAnimation.begin().thenPlay("animation.threnody.scream");
+    private static final RawAnimation TRANSFORM_ANIM = RawAnimation.begin().thenPlay("animation.threnody.transform");
+    private static final RawAnimation JUDGMENT_ANIM = RawAnimation.begin().thenPlay("animation.threnody.judgment");
+
     private static final EntityDataAccessor<Byte> DATA_STAGE =
             SynchedEntityData.defineId(ThrenodyEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Boolean> DATA_ENRAGED =
+            SynchedEntityData.defineId(ThrenodyEntity.class, EntityDataSerializers.BOOLEAN);
     private static final TagKey<net.minecraft.world.level.block.Block> BREAKABLE_BLOCKS =
             TagKey.create(
                     net.minecraft.core.registries.Registries.BLOCK,
@@ -55,6 +83,8 @@ public class ThrenodyEntity extends Monster {
     private static final double[] DAMAGE_BY_STAGE = {3.0D, 4.0D, 5.0D, 7.0D, 8.0D, 10.0D};
 
     private int stageTicks;
+    private int enragedTicks;
+    private final AnimatableInstanceCache animationCache = GeckoLibUtil.createInstanceCache(this);
 
     public ThrenodyEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
@@ -65,6 +95,7 @@ public class ThrenodyEntity extends Monster {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_STAGE, (byte) Stage.STALKER.getId());
+        this.entityData.define(DATA_ENRAGED, false);
     }
 
     public Stage getStage() {
@@ -137,7 +168,11 @@ public class ThrenodyEntity extends Monster {
             return;
         }
 
-        if (this.level().isDay() && this.level().dimensionType().hasSkyLight()) {
+        if (enragedTicks > 0 && --enragedTicks == 0) {
+            setEnraged(false);
+        }
+
+        if (!isEnraged() && this.level().isDay() && this.level().dimensionType().hasSkyLight()) {
             ((ServerLevel) this.level()).sendParticles(
                     ParticleTypes.LARGE_SMOKE,
                     getX(),
@@ -167,6 +202,8 @@ public class ThrenodyEntity extends Monster {
         stageTicks = 0;
         setStage(Stage.fromId(getStage().getId() + 1));
         this.level().broadcastEntityEvent(this, (byte) 60);
+        triggerAnim(ACTION_CONTROLLER, ANIM_TRANSFORM);
+        playSound(SoundEvents.WARDEN_AGITATED, 1.4F, 0.6F);
     }
 
     private void chooseRememberedTarget() {
@@ -236,6 +273,7 @@ public class ThrenodyEntity extends Monster {
 
     @Override
     public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
+        triggerAnim(ACTION_CONTROLLER, ANIM_ATTACK);
         if (!super.doHurtTarget(target)) {
             return false;
         }
@@ -282,6 +320,7 @@ public class ThrenodyEntity extends Monster {
         super.addAdditionalSaveData(compound);
         compound.putByte("ThrenodyStage", (byte) getStage().getId());
         compound.putInt("ThrenodyStageTicks", stageTicks);
+        compound.putInt("ThrenodyEnragedTicks", enragedTicks);
     }
 
     @Override
@@ -289,6 +328,96 @@ public class ThrenodyEntity extends Monster {
         super.readAdditionalSaveData(compound);
         setStage(Stage.fromId(compound.getByte("ThrenodyStage")));
         stageTicks = Math.max(0, compound.getInt("ThrenodyStageTicks"));
+        enragedTicks = Math.max(0, compound.getInt("ThrenodyEnragedTicks"));
+        setEnraged(enragedTicks > 0);
         applyStageAttributes(getStage(), false);
+    }
+
+    public boolean isEnraged() {
+        return this.entityData.get(DATA_ENRAGED);
+    }
+
+    private void setEnraged(boolean enraged) {
+        this.entityData.set(DATA_ENRAGED, enraged);
+    }
+
+    /**
+     * Marks this entity as the executor of a judgment against a player who broke the survival covenant.
+     * While enraged it ignores daylight, hunts the offender directly, and performs the judgment animation.
+     */
+    public void beginJudgment(ServerPlayer offender, int severity) {
+        setTarget(offender);
+        setLastHurtByMob(offender);
+        enragedTicks = 600 + Math.min(severity, 6) * 200;
+        setEnraged(true);
+        triggerAnim(ACTION_CONTROLLER, ANIM_JUDGMENT);
+        playSound(SoundEvents.WARDEN_ROAR, 2.0F, 0.55F);
+    }
+
+    public void screamAt(ServerPlayer target) {
+        setTarget(target);
+        triggerAnim(ACTION_CONTROLLER, ANIM_SCREAM);
+        playSound(SoundEvents.WARDEN_SONIC_BOOM, 1.6F, 0.7F);
+    }
+
+    private boolean isCrawlingStage() {
+        return getStage() == Stage.CRAWLER || getStage() == Stage.SQUEEZE;
+    }
+
+    private boolean isHunting() {
+        return isEnraged() || (getTarget() != null && getTarget().isAlive());
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "movement", 6, this::movementAnimation));
+        controllers.add(new AnimationController<>(this, ACTION_CONTROLLER, 2, state -> PlayState.STOP)
+                .triggerableAnim(ANIM_ATTACK, ATTACK_ANIM)
+                .triggerableAnim(ANIM_SCREAM, SCREAM_ANIM)
+                .triggerableAnim(ANIM_TRANSFORM, TRANSFORM_ANIM)
+                .triggerableAnim(ANIM_JUDGMENT, JUDGMENT_ANIM));
+    }
+
+    private PlayState movementAnimation(AnimationState<ThrenodyEntity> state) {
+        AnimationController<ThrenodyEntity> controller = state.getController();
+
+        if (isCrawlingStage()) {
+            controller.setAnimation(CRAWL_ANIM);
+        } else if (state.isMoving()) {
+            controller.setAnimation(isHunting() ? RUN_ANIM : WALK_ANIM);
+        } else {
+            controller.setAnimation(IDLE_ANIM);
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return animationCache;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getAmbientSound() {
+        return isEnraged() ? SoundEvents.WARDEN_ANGRY : SoundEvents.WARDEN_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.WARDEN_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.WARDEN_DEATH;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        playSound(SoundEvents.WARDEN_STEP, 0.25F, 1.35F);
+    }
+
+    @Override
+    public SoundSource getSoundSource() {
+        return SoundSource.HOSTILE;
     }
 }

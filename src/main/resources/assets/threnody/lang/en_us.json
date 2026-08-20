@@ -1,3 +1,7 @@
 {
-  "entity.threnody.threnody": "Threnody"
+  "entity.threnody.threnody": "Threnody",
+  "threnody.judgment.noticed": "The dark shifts. Something noticed what you just did.",
+  "threnody.judgment.marked": "You have been marked. It knows where you are standing.",
+  "threnody.judgment.hunted": "The covenant is broken. Threnody is coming for you.",
+  "threnody.judgment.reverted": "Survival is not optional. You were pulled back."
 }
