@@ -148,3 +148,12 @@ data/threnody/forge/biome_modifier/add_threnody_spawns.json
 - Natural groups are limited to one entity by the biome spawn entry.
 - Vanilla path navigation is used; climbing and compact collision behavior augment it without running a separate expensive 3D pathfinder.
 - Animation state is resolved on the client; the server only syncs the stage, enraged flag, and triggered animation names.
+
+## Credits
+
+Threnody is designed, built, and maintained by **Susli76**.
+
+- TikTok: [@susli.ae](https://www.tiktok.com/@susli.ae)
+- GitHub: [SUSLImc/threnody](https://github.com/SUSLImc/threnody)
+
+Animation runtime provided by [GeckoLib](https://github.com/bernie-g/geckolib). Released under the MIT License.
