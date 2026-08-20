@@ -12,20 +12,25 @@
 <title>Threnody — The night remembers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400;1,6..96,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nosifer&family=Creepster&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#060708;
   --panel:#0b0e10;
   --panel-2:#0f1315;
   --line:rgba(255,255,255,.085);
-  --line-hot:rgba(196,58,48,.42);
+  --line-hot:rgba(196,58,48,.45);
   --text:#eceae6;
   --muted:#878d8c;
-  --bone:#d9d2c4;
-  --blood:#a3231c;
-  --ember:#ff6a4d;
+  --blood:#b81f1a;
+  --blood-deep:#6d0f0c;
+  --ember:#ff7a4d;
+  --bone:#ece3d2;
+  --rot:#8fae7a;
+  --bruise:#b07ac6;
   --dread:0;
+  --horror:"Nosifer",'Creepster',cursive;
+  --creep:"Creepster",'Bodoni Moda',cursive;
   --display:"Bodoni Moda",Georgia,serif;
   --sans:"Inter",system-ui,sans-serif;
   --mono:"JetBrains Mono",monospace;
@@ -33,188 +38,234 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--sans);
-  font-weight:300;
-  line-height:1.65;
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* ── Atmosphere layers ─────────────────────────────── */
+/* ── Atmosphere ────────────────────────────────────── */
 .atmos{position:fixed;inset:0;pointer-events:none;z-index:0}
-.fog{position:absolute;inset:-25%;filter:blur(90px);opacity:calc(.32 + var(--dread) * .5)}
+.fog{position:absolute;inset:-25%;filter:blur(90px);opacity:calc(.34 + var(--dread) * .5)}
 .fog i{position:absolute;display:block;border-radius:50%}
-.fog i:nth-child(1){width:52vw;height:52vw;left:-8vw;top:2vh;background:radial-gradient(circle,rgba(120,26,22,.5),transparent 68%);animation:drift-a 34s ease-in-out infinite alternate}
-.fog i:nth-child(2){width:46vw;height:46vw;right:-6vw;top:28vh;background:radial-gradient(circle,rgba(26,60,54,.34),transparent 70%);animation:drift-b 44s ease-in-out infinite alternate}
-.fog i:nth-child(3){width:60vw;height:60vw;left:18vw;bottom:-18vh;background:radial-gradient(circle,rgba(92,18,16,.4),transparent 72%);animation:drift-c 52s ease-in-out infinite alternate}
-.vignette{position:absolute;inset:0;box-shadow:inset 0 0 calc(140px + var(--dread) * 300px) rgba(122,14,11,calc(.2 + var(--dread) * .55)),inset 0 0 60px rgba(0,0,0,.85);animation:heart 5.5s ease-in-out infinite}
+.fog i:nth-child(1){width:52vw;height:52vw;left:-8vw;top:2vh;background:radial-gradient(circle,rgba(140,24,20,.52),transparent 68%);animation:drift-a 34s ease-in-out infinite alternate}
+.fog i:nth-child(2){width:46vw;height:46vw;right:-6vw;top:28vh;background:radial-gradient(circle,rgba(26,60,54,.32),transparent 70%);animation:drift-b 44s ease-in-out infinite alternate}
+.fog i:nth-child(3){width:60vw;height:60vw;left:18vw;bottom:-18vh;background:radial-gradient(circle,rgba(104,16,14,.44),transparent 72%);animation:drift-c 52s ease-in-out infinite alternate}
+.vignette{position:absolute;inset:0;box-shadow:inset 0 0 calc(140px + var(--dread) * 320px) rgba(130,12,9,calc(.22 + var(--dread) * .58)),inset 0 0 60px rgba(0,0,0,.85);animation:heart 5.5s ease-in-out infinite}
 .grain{position:absolute;inset:-120%;opacity:calc(.05 + var(--dread) * .07);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 1s steps(4) infinite}
 .scan{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0 3px,rgba(0,0,0,.22) 3px 4px);opacity:calc(.25 + var(--dread) * .3)}
 .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(to bottom,#000,transparent 70%)}
-
 @keyframes drift-a{to{transform:translate3d(9vw,7vh,0) scale(1.18)}}
 @keyframes drift-b{to{transform:translate3d(-11vw,-5vh,0) scale(1.24)}}
 @keyframes drift-c{to{transform:translate3d(6vw,-9vh,0) scale(1.12)}}
-@keyframes heart{0%,100%{opacity:.9}44%{opacity:1}52%{opacity:.82}60%{opacity:1}}
+@keyframes heart{0%,100%{opacity:.9}44%{opacity:1}52%{opacity:.8}60%{opacity:1}}
 @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-4%,3%)}50%{transform:translate(3%,-4%)}75%{transform:translate(-3%,-3%)}100%{transform:translate(4%,4%)}}
+
+/* ── Word colours ──────────────────────────────────── */
+.w-blood{color:#d4291f;text-shadow:0 0 18px rgba(212,41,31,.55),0 2px 0 rgba(60,4,3,.9)}
+.w-ember{color:#ff8a5c;text-shadow:0 0 20px rgba(255,138,92,.5)}
+.w-bone{color:var(--bone);text-shadow:0 0 16px rgba(236,227,210,.28)}
+.w-rot{color:#9dbd84;text-shadow:0 0 18px rgba(157,189,132,.35)}
+.w-bruise{color:#b07ac6;text-shadow:0 0 18px rgba(176,122,198,.4)}
+.w-ash{color:#79807e}
+.w-rust{color:#c96a2c;text-shadow:0 0 18px rgba(201,106,44,.4)}
+
+/* ── Wet gloss ─────────────────────────────────────── */
+.shine{
+  background:linear-gradient(112deg,#5c0b09 0%,#a61a15 18%,#e8443a 34%,#ffd7cd 44%,#e8443a 54%,#a61a15 72%,#5c0b09 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,.75)) drop-shadow(0 0 26px rgba(184,31,26,.5));
+  animation:sheen 7s linear infinite;
+}
+.shine-bone{
+  background:linear-gradient(112deg,#6d675c 0%,#cfc6b3 22%,#fffaf0 40%,#cfc6b3 58%,#6d675c 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.7));
+  animation:sheen 9s linear infinite;
+}
+@keyframes sheen{to{background-position:300% 0}}
+
+/* ── Blood drips ───────────────────────────────────── */
+.bleed{position:relative;display:inline-block}
+.drips{position:absolute;left:0;right:0;top:88%;height:0;pointer-events:none;z-index:3}
+.drips i{
+  position:absolute;top:0;width:var(--w,8px);height:0;
+  background:linear-gradient(180deg,#7d100d 0%,#c1231c 45%,#8d1310 78%,#4d0705 100%);
+  border-radius:0 0 55% 55% / 0 0 130% 130%;
+  box-shadow:inset -1.5px 0 0 rgba(255,255,255,.22),inset 1.5px 0 2px rgba(0,0,0,.5),0 0 12px rgba(184,31,26,.6);
+  animation:ooze var(--d,8s) var(--delay,0s) ease-in-out infinite;
+}
+.drips i::before{content:"";position:absolute;top:14%;left:20%;width:26%;height:38%;border-radius:50%;background:rgba(255,225,220,.55);filter:blur(.6px)}
+.drips i::after{
+  content:"";position:absolute;left:50%;top:100%;width:var(--w,8px);height:calc(var(--w,8px) * 1.25);
+  transform:translate(-50%,0);border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+  background:radial-gradient(circle at 34% 28%,#f0706a,#a41913 55%,#5e0a08);
+  box-shadow:0 0 10px rgba(184,31,26,.7);opacity:0;
+  animation:drop var(--d,8s) var(--delay,0s) ease-in infinite;
+}
+@keyframes ooze{0%,8%{height:0}42%{height:var(--h,30px)}66%{height:calc(var(--h,30px) * .82)}88%{height:calc(var(--h,30px) * .9)}100%{height:0}}
+@keyframes drop{0%,54%{opacity:0;transform:translate(-50%,0) scaleY(.8)}60%{opacity:1;transform:translate(-50%,6px) scaleY(1.1)}92%{opacity:0;transform:translate(-50%,130px) scaleY(1.5)}100%{opacity:0;transform:translate(-50%,130px)}}
+
+/* Gore divider */
+.gore{position:relative;height:0;z-index:3}
+.gore span{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#8d1310 12%,#c1231c 50%,#8d1310 88%,transparent);box-shadow:0 0 18px rgba(184,31,26,.6)}
 
 /* ── Shell ─────────────────────────────────────────── */
 .wrap{max-width:var(--max);margin:0 auto;padding:0 30px;position:relative;z-index:2}
 a{color:inherit}
-.mono{font-family:var(--mono)}
-.eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ember);opacity:.9}
+.eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ember);opacity:.92}
 
 header{position:sticky;top:0;z-index:60;border-bottom:1px solid transparent;transition:.45s ease}
-header.stuck{background:rgba(6,7,8,.82);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+header.stuck{background:rgba(6,7,8,.85);backdrop-filter:blur(14px);border-bottom-color:var(--line-hot)}
 nav{display:flex;align-items:center;justify-content:space-between;min-height:78px;transition:min-height .45s ease}
 header.stuck nav{min-height:62px}
 .brand{display:flex;align-items:center;gap:13px;text-decoration:none}
-.sigil{width:24px;height:24px;border:1px solid var(--blood);transform:rotate(45deg);display:grid;place-items:center;box-shadow:0 0 20px rgba(163,35,28,.5);animation:sigil 6s ease-in-out infinite}
+.sigil{width:24px;height:24px;border:1px solid var(--blood);transform:rotate(45deg);display:grid;place-items:center;box-shadow:0 0 20px rgba(184,31,26,.55);animation:sigil 6s ease-in-out infinite}
 .sigil::after{content:"";width:6px;height:6px;background:var(--ember);box-shadow:0 0 12px var(--ember)}
-@keyframes sigil{0%,100%{box-shadow:0 0 14px rgba(163,35,28,.35)}50%{box-shadow:0 0 30px rgba(255,106,77,.6)}}
-.brand span{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:.3em;text-transform:uppercase}
+@keyframes sigil{0%,100%{box-shadow:0 0 14px rgba(184,31,26,.35)}50%{box-shadow:0 0 32px rgba(255,122,77,.7)}}
+.brand b{font-family:var(--creep);font-weight:400;font-size:1.3rem;letter-spacing:.16em;text-transform:uppercase}
 nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0}
 nav ul a{font-size:.76rem;letter-spacing:.06em;color:var(--muted);text-decoration:none;position:relative;padding-bottom:3px;transition:color .3s}
-nav ul a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--ember);transition:width .35s ease}
+nav ul a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--blood);box-shadow:0 0 8px var(--blood);transition:width .35s ease}
 nav ul a:hover,nav ul a:focus-visible{color:var(--text)}
 nav ul a:hover::after,nav ul a:focus-visible::after{width:100%}
 
 .button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--line);position:relative;overflow:hidden;transition:.3s ease}
-.button span{position:relative;z-index:2}
-.button.primary{background:var(--blood);border-color:var(--blood);color:#fff}
-.button.primary::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.32),transparent);transform:translateX(-120%);transition:transform .7s ease}
+.button i{position:relative;z-index:2;font-style:normal}
+.button.primary{background:linear-gradient(180deg,#c9271f,#8c1310);border-color:#c9271f;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 8px 30px rgba(184,31,26,.3)}
+.button.primary::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-120%);transition:transform .7s ease}
 .button.primary:hover::before,.button.primary:focus-visible::before{transform:translateX(120%)}
-.button.primary:hover,.button.primary:focus-visible{background:#c22c23;border-color:#c22c23;transform:translateY(-2px);box-shadow:0 12px 40px rgba(163,35,28,.35)}
+.button.primary:hover,.button.primary:focus-visible{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 14px 44px rgba(184,31,26,.45)}
 .button.ghost:hover,.button.ghost:focus-visible{border-color:var(--line-hot);background:var(--panel-2);transform:translateY(-2px)}
 
 /* ── Hero ──────────────────────────────────────────── */
-.hero{padding:120px 0 96px;position:relative}
+.hero{padding:112px 0 104px;position:relative}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,390px);gap:64px;align-items:end}
-.wordmark{font-family:var(--display);font-weight:900;font-size:clamp(4.2rem,13vw,10.5rem);line-height:.8;letter-spacing:-.045em;margin:26px 0 0;display:flex;flex-wrap:wrap}
-.wordmark i{font-style:normal;display:inline-block;opacity:0;transform:translateY(.35em) rotate(3deg);animation:letter .9s cubic-bezier(.2,.8,.2,1) forwards}
-.wordmark i.flick{animation:letter .9s cubic-bezier(.2,.8,.2,1) forwards,flicker 7s 2s steps(1) infinite}
+.wordmark{font-family:var(--horror);font-weight:400;font-size:clamp(2.3rem,6.6vw,5.4rem);line-height:1.08;letter-spacing:.005em;margin:30px 0 0;display:inline-block;filter:drop-shadow(0 4px 12px rgba(0,0,0,.8)) drop-shadow(0 0 30px rgba(184,31,26,.55));animation:wordflicker 9s 3s steps(1) infinite}
+.wordmark i{
+  font-style:normal;display:inline-block;
+  background:linear-gradient(112deg,#5c0b09 0%,#a61a15 18%,#e8443a 34%,#ffd7cd 44%,#e8443a 54%,#a61a15 72%,#5c0b09 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  opacity:0;transform:translateY(.3em) rotate(4deg);
+  animation:letter 1s cubic-bezier(.2,.8,.2,1) forwards,sheen 7s linear infinite;
+}
 @keyframes letter{to{opacity:1;transform:none}}
-@keyframes flicker{0%,96%,100%{opacity:1;color:inherit}97%{opacity:.25}98%{opacity:1;color:var(--ember)}99%{opacity:.5}}
-.sub{font-family:var(--display);font-style:italic;font-weight:400;font-size:clamp(1.5rem,3.4vw,2.6rem);color:var(--blood);line-height:1;margin:6px 0 30px;letter-spacing:-.02em}
-.lede{font-size:clamp(1.02rem,1.6vw,1.24rem);color:#b8bfbd;max-width:590px;font-weight:300}
-.lede strong{color:var(--text);font-weight:600}
+@keyframes wordflicker{0%,92%,100%{opacity:1}93%{opacity:.3}94%{opacity:1}95.5%{opacity:.55}}
+.sub{font-family:var(--creep);font-weight:400;font-size:clamp(1.7rem,4vw,3.1rem);line-height:1.1;margin:34px 0 26px;letter-spacing:.02em}
+.lede{font-size:clamp(1.02rem,1.6vw,1.24rem);color:#b8bfbd;max-width:600px;font-weight:300}
+.lede strong{font-weight:600}
 .actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:38px}
 
-.monitor{background:rgba(11,14,16,.78);border:1px solid var(--line);padding:28px;position:relative;backdrop-filter:blur(6px)}
-.monitor::before{content:"";position:absolute;top:-1px;left:-1px;width:54px;height:5px;background:var(--blood)}
+.monitor{background:rgba(11,14,16,.8);border:1px solid var(--line);padding:28px;position:relative;backdrop-filter:blur(6px)}
+.monitor::before{content:"";position:absolute;top:-1px;left:-1px;width:54px;height:5px;background:var(--blood);box-shadow:0 0 16px var(--blood)}
 .monitor-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
 .monitor-head b{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:400}
-.live{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.66rem;color:#9bbbab}
-.live::before{content:"";width:6px;height:6px;border-radius:50%;background:#9bbbab;box-shadow:0 0 12px #9bbbab;animation:blip 2.4s ease-in-out infinite}
+.live{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.66rem;color:#9dbd84}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:#9dbd84;box-shadow:0 0 12px #9dbd84;animation:blip 2.4s ease-in-out infinite}
 @keyframes blip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
-.monitor h2{font-family:var(--display);font-weight:700;font-size:2.15rem;line-height:1.02;margin:0 0 12px;letter-spacing:-.02em}
+.monitor h2{font-family:var(--creep);font-weight:400;font-size:1.95rem;line-height:1.12;margin:0 0 14px;letter-spacing:.015em}
 .monitor p{color:var(--muted);font-size:.86rem;margin:0}
 .wave{display:flex;align-items:flex-end;gap:3px;height:38px;margin:26px 0 12px}
-.wave i{flex:1;background:linear-gradient(to top,var(--blood),var(--ember));opacity:.75;animation:wave 1.4s ease-in-out infinite}
+.wave i{flex:1;background:linear-gradient(to top,#7d100d,var(--blood),var(--ember));opacity:.8;animation:wave 1.4s ease-in-out infinite}
 @keyframes wave{0%,100%{height:14%}50%{height:100%}}
 .monitor-foot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.63rem;color:var(--muted)}
 
 /* ── Marquee ───────────────────────────────────────── */
-.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:17px 0;background:rgba(9,11,12,.6);position:relative;z-index:2}
-.marquee div{display:flex;gap:44px;white-space:nowrap;animation:slide 32s linear infinite;width:max-content}
-.marquee span{font-family:var(--display);font-style:italic;font-size:1.05rem;color:#5d6462;letter-spacing:.04em}
-.marquee span b{color:var(--blood);font-style:normal;margin-right:44px}
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;background:rgba(9,11,12,.65);position:relative;z-index:2}
+.marquee div{display:flex;gap:40px;white-space:nowrap;animation:slide 30s linear infinite;width:max-content}
+.marquee p{font-family:var(--creep);font-size:1.32rem;margin:0;letter-spacing:.04em}
+.marquee b{color:#5d1512;margin:0 18px;font-weight:400}
 @keyframes slide{to{transform:translateX(-50%)}}
 
 /* ── Sections ──────────────────────────────────────── */
 section{padding:120px 0;position:relative;z-index:2}
-.head{display:flex;justify-content:space-between;align-items:flex-end;gap:36px;margin-bottom:52px}
-h2.title{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,5vw,4rem);line-height:.96;letter-spacing:-.035em;margin:12px 0 0}
-h2.title em{font-style:italic;color:var(--blood)}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:36px;margin-bottom:56px}
+h2.title{font-family:var(--creep);font-weight:400;font-size:clamp(2.4rem,5.6vw,4.6rem);line-height:1.08;letter-spacing:.015em;margin:14px 0 0}
 .intro{color:var(--muted);font-size:.96rem;max-width:400px}
-
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .85s cubic-bezier(.2,.8,.2,1),transform .85s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;transform:none}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .stat{padding:28px 24px;border-right:1px solid var(--line)}
 .stat:last-child{border-right:0}
-.stat b{display:block;font-family:var(--display);font-weight:700;font-size:2.5rem;line-height:1;letter-spacing:-.04em}
-.stat span{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:11px}
+.stat b{display:block;font-family:var(--creep);font-weight:400;font-size:2.7rem;line-height:1.1}
+.stat span{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:9px}
 
 /* ── Escalation ────────────────────────────────────── */
 .tiers{display:grid;gap:1px}
-.tier{position:relative;display:grid;grid-template-columns:170px 1fr 210px;gap:34px;align-items:center;padding:34px 32px;border:1px solid var(--line);margin-top:-1px;background:linear-gradient(100deg,rgba(11,14,16,calc(.5 + var(--t) * .5)),rgba(6,7,8,.92));transition:border-color .45s ease,transform .45s ease}
-.tier::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,transparent,rgba(163,35,28,calc(.25 + var(--t) * .75)),transparent)}
+.tier{position:relative;display:grid;grid-template-columns:190px 1fr;gap:34px;align-items:center;padding:36px 32px;border:1px solid var(--line);margin-top:-1px;background:linear-gradient(100deg,rgba(11,14,16,calc(.5 + var(--t) * .5)),rgba(6,7,8,.92));transition:border-color .45s ease,transform .45s ease}
+.tier::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,transparent,rgba(184,31,26,calc(.25 + var(--t) * .75)),transparent)}
 .tier:hover{border-color:var(--line-hot);transform:translateX(5px)}
-.tier-tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,106,77,calc(.55 + var(--t) * .45))}
-.tier h3{font-family:var(--display);font-weight:700;font-size:1.55rem;letter-spacing:-.02em;margin:9px 0 8px}
+.tier-tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,122,77,calc(.55 + var(--t) * .45))}
+.tier h3{font-family:var(--creep);font-weight:400;font-size:1.72rem;letter-spacing:.015em;margin:12px 0 10px;line-height:1.15}
 .tier p{color:var(--muted);font-size:.9rem;margin:0}
-.tier .look{display:block;margin-top:11px;font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:rgba(217,210,196,calc(.35 + var(--t) * .5))}
-.meter{height:5px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
-.meter i{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,#5c1512,var(--blood),var(--ember));transition:right 1.5s cubic-bezier(.2,.8,.2,1);transition-delay:.15s}
+.tier .look{display:block;margin-top:13px;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:rgba(236,227,210,calc(.34 + var(--t) * .5))}
+.meter{height:6px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
+.meter i{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,#4d0705,#b81f1a 60%,#ff8a5c);box-shadow:0 0 14px rgba(184,31,26,.6);transition:right 1.6s cubic-bezier(.2,.8,.2,1) .15s}
 .in .meter i{right:calc(100% - var(--level))}
 .meter-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
 
-/* ── Feature grid ──────────────────────────────────── */
+/* ── Features ──────────────────────────────────────── */
 .features{display:grid;grid-template-columns:repeat(3,1fr)}
 .feature{background:var(--panel);border:1px solid var(--line);margin:-1px 0 0 -1px;padding:34px 30px;position:relative;overflow:hidden;transition:background .4s ease,transform .4s ease}
-.feature::after{content:"";position:absolute;inset:auto -40% -70% auto;width:200px;height:200px;background:radial-gradient(circle,rgba(163,35,28,.3),transparent 68%);opacity:0;transition:opacity .5s ease}
+.feature::after{content:"";position:absolute;inset:auto -40% -70% auto;width:200px;height:200px;background:radial-gradient(circle,rgba(184,31,26,.32),transparent 68%);opacity:0;transition:opacity .5s ease}
 .feature:hover{background:var(--panel-2);transform:translateY(-4px)}
 .feature:hover::after{opacity:1}
 .feature-no{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--ember)}
-.feature h3{font-family:var(--display);font-weight:700;font-size:1.28rem;margin:24px 0 10px;letter-spacing:-.015em}
+.feature h3{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:24px 0 10px;letter-spacing:-.015em}
 .feature p{color:var(--muted);font-size:.87rem;margin:0}
 
 /* ── Judgment ──────────────────────────────────────── */
 .rungs{display:grid;gap:1px}
-.rung{display:grid;grid-template-columns:180px 1fr;gap:30px;padding:30px 32px;background:var(--panel);border:1px solid var(--line);margin-top:-1px;transition:.4s ease}
+.rung{display:grid;grid-template-columns:190px 1fr;gap:30px;padding:32px;background:var(--panel);border:1px solid var(--line);margin-top:-1px;transition:.4s ease}
 .rung:hover{background:var(--panel-2);border-color:var(--line-hot)}
 .rung-no{font-family:var(--mono);font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ember)}
-.rung h3{font-family:var(--display);font-weight:700;font-size:1.25rem;margin:0 0 7px}
+.rung h3{font-family:var(--creep);font-weight:400;font-size:1.45rem;margin:0 0 9px;letter-spacing:.015em}
 .rung p{color:var(--muted);font-size:.88rem;margin:0}
-.verdict{margin-top:42px;padding:36px;border:1px solid var(--line-hot);background:linear-gradient(125deg,rgba(72,20,18,.45),rgba(11,14,16,.9))}
+.verdict{margin-top:44px;padding:38px;border:1px solid var(--line-hot);background:linear-gradient(125deg,rgba(88,18,15,.5),rgba(11,14,16,.92));box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
 .verdict p{margin:0;font-size:1.04rem;color:#e8d8d5}
-.verdict strong{color:#fff;font-weight:600}
 
 /* ── Devlog ────────────────────────────────────────── */
-.log{position:relative;padding-left:34px}
-.log::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:linear-gradient(to bottom,var(--blood),rgba(163,35,28,.15));transform-origin:top;transform:scaleY(0);transition:transform 1.8s ease}
+.log{position:relative;padding-left:36px}
+.log::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,#c1231c,rgba(184,31,26,.12));box-shadow:0 0 14px rgba(184,31,26,.5);transform-origin:top;transform:scaleY(0);transition:transform 1.8s ease}
 .log.in::before{transform:scaleY(1)}
-.entry{position:relative;padding:0 0 44px}
+.entry{position:relative;padding:0 0 46px}
 .entry:last-child{padding-bottom:0}
-.entry::before{content:"";position:absolute;left:-34px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:1px solid var(--blood);box-shadow:0 0 0 4px var(--bg),0 0 16px rgba(163,35,28,.6)}
-.entry.now::before{background:var(--ember);box-shadow:0 0 0 4px var(--bg),0 0 22px var(--ember);animation:blip 2.4s ease-in-out infinite}
-.entry-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:6px}
-.entry-ver{font-family:var(--display);font-weight:700;font-size:1.32rem;letter-spacing:-.01em}
+.entry::before{content:"";position:absolute;left:-36px;top:9px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:1px solid var(--blood);box-shadow:0 0 0 4px var(--bg),0 0 18px rgba(184,31,26,.7)}
+.entry.now::before{background:var(--ember);box-shadow:0 0 0 4px var(--bg),0 0 26px var(--ember);animation:blip 2.4s ease-in-out infinite}
+.entry-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:8px}
+.entry-ver{font-family:var(--creep);font-weight:400;font-size:1.5rem;letter-spacing:.015em}
 .entry-date{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .badge{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border:1px solid var(--line-hot);color:var(--ember)}
 .entry-sum{color:#a9b0ae;font-size:.92rem;margin:0 0 14px}
-.entry ul{margin:0;padding-left:19px;list-style:none}
+.entry ul{margin:0;padding-left:20px;list-style:none}
 .entry li{color:var(--muted);font-size:.86rem;margin-bottom:7px;position:relative}
-.entry li::before{content:"—";position:absolute;left:-19px;color:var(--blood)}
+.entry li::before{content:"—";position:absolute;left:-20px;color:var(--blood)}
 
 /* ── Install / config ──────────────────────────────── */
 .install{display:grid;grid-template-columns:.85fr 1.15fr;gap:52px;padding:46px;background:var(--panel);border:1px solid var(--line)}
-.install h2{font-family:var(--display);font-weight:700;font-size:2.3rem;margin:12px 0 14px;letter-spacing:-.03em}
+.install h2{font-family:var(--creep);font-weight:400;font-size:2.7rem;margin:14px 0 16px;letter-spacing:.015em}
 .install p{color:var(--muted);font-size:.92rem;margin-bottom:26px}
 .steps{display:grid;gap:16px}
 .step{display:grid;grid-template-columns:34px 1fr;gap:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .step:last-child{border-bottom:0;padding-bottom:0}
 .step b{font-family:var(--mono);font-size:.78rem;color:var(--ember);font-weight:400}
 .step p{margin:0;color:var(--text);font-size:.92rem}
-code{font-family:var(--mono);font-size:.82em;color:#9bbbab}
+code{font-family:var(--mono);font-size:.82em;color:#9dbd84}
 .config{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
 .config p{color:var(--muted);font-size:.93rem}
 .clist{list-style:none;margin:26px 0 0;padding:0}
 .clist li{border-top:1px solid var(--line);padding:13px 0;color:var(--muted);font-size:.87rem}
 .clist li::before{content:"—";color:var(--blood);margin-right:11px}
-pre{background:#040506;border:1px solid var(--line);padding:26px;margin:0;overflow-x:auto;font-family:var(--mono);font-size:.77rem;line-height:1.85;color:#9bbbab}
+pre{background:#040506;border:1px solid var(--line);padding:26px;margin:0;overflow-x:auto;font-family:var(--mono);font-size:.77rem;line-height:1.85;color:#9dbd84}
 
-/* ── Credits / footer ──────────────────────────────── */
-.credit{padding:104px 0;text-align:center;border-top:1px solid var(--line)}
-.credit .eyebrow{display:block;margin-bottom:20px}
-.credit h2{font-family:var(--display);font-weight:700;font-style:italic;font-size:clamp(2.4rem,6vw,4.4rem);letter-spacing:-.03em;margin:0 0 10px;line-height:1}
-.credit p{color:var(--muted);max-width:520px;margin:0 auto 34px}
+/* ── Credits ───────────────────────────────────────── */
+.credit{padding:112px 0 120px;text-align:center;border-top:1px solid var(--line)}
+.credit .eyebrow{display:block;margin-bottom:26px}
+.credit h2{font-family:var(--horror);font-weight:400;font-size:clamp(2.2rem,7vw,4.6rem);margin:0 0 30px;line-height:1.15;display:inline-block}
+.credit p{color:var(--muted);max-width:520px;margin:26px auto 34px}
 .socials{display:flex;flex-wrap:wrap;gap:13px;justify-content:center}
 footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);font-size:.77rem}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
@@ -222,15 +273,14 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 
 @media(max-width:900px){
   nav ul{gap:16px}
-  .hero{padding:78px 0 68px}
+  .hero{padding:74px 0 72px}
   .hero-grid,.install,.config{grid-template-columns:1fr}
   .hero-grid{gap:46px}
   .stats{grid-template-columns:repeat(2,1fr)}
   .stat:nth-child(2){border-right:0}
   .stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .features{grid-template-columns:1fr}
-  .tier{grid-template-columns:1fr;gap:16px}
-  .rung{grid-template-columns:1fr;gap:8px}
+  .tier,.rung{grid-template-columns:1fr;gap:16px}
   .head{flex-direction:column;align-items:flex-start}
 }
 @media(max-width:560px){
@@ -239,12 +289,14 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
   section{padding:82px 0}
   .install{padding:26px}
   .foot{flex-direction:column;align-items:flex-start}
+  .drips i{--h:18px!important}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
   .reveal{opacity:1;transform:none}
   .meter i{right:calc(100% - var(--level))}
   .log::before{transform:scaleY(1)}
+  .drips i{height:var(--h,30px)}
 }
 </style>
 </head>
@@ -261,7 +313,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 <header id="top">
   <div class="wrap">
     <nav aria-label="Primary">
-      <a class="brand" href="#top" aria-label="Threnody home"><span class="sigil" aria-hidden="true"></span><span>Threnody</span></a>
+      <a class="brand" href="#top" aria-label="Threnody home"><span class="sigil" aria-hidden="true"></span><b class="w-blood">Threnody</b></a>
       <ul>
         <li><a href="#escalation">Escalation</a></li>
         <li><a href="#systems">Systems</a></li>
@@ -279,19 +331,39 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
     <div class="wrap hero-grid">
       <div>
         <div class="eyebrow">Minecraft 1.20.1 · Forge · Open source</div>
-        <h1 class="wordmark" aria-label="Threnody">
-          <i>T</i><i>h</i><i>r</i><i>e</i><i class="flick">n</i><i>o</i><i>d</i><i>y</i>
+
+        <h1 class="wordmark bleed" aria-label="Threnody">
+          <i>T</i><i>h</i><i>r</i><i>e</i><i>n</i><i>o</i><i>d</i><i>y</i>
+          <span class="drips" aria-hidden="true">
+            <i style="left:3%;--w:10px;--h:52px;--d:7.5s;--delay:.6s"></i>
+            <i style="left:14%;--w:7px;--h:30px;--d:9s;--delay:2.1s"></i>
+            <i style="left:26%;--w:12px;--h:66px;--d:8.2s;--delay:1.2s"></i>
+            <i style="left:38%;--w:6px;--h:24px;--d:10s;--delay:3.4s"></i>
+            <i style="left:49%;--w:9px;--h:44px;--d:7.8s;--delay:.2s"></i>
+            <i style="left:61%;--w:11px;--h:58px;--d:8.8s;--delay:2.8s"></i>
+            <i style="left:73%;--w:7px;--h:28px;--d:9.6s;--delay:1.7s"></i>
+            <i style="left:84%;--w:10px;--h:48px;--d:7.2s;--delay:3.9s"></i>
+            <i style="left:93%;--w:6px;--h:22px;--d:10.4s;--delay:.9s"></i>
+          </span>
         </h1>
-        <div class="sub">The night remembers.</div>
-        <p class="lede"><strong>Threnody</strong> is an adaptive horror entity for Minecraft. It watches how you survive, it remembers every encounter, and it becomes something worse each time it fails to reach you.</p>
+
+        <div class="sub">
+          <span class="w-bone">The</span>
+          <span class="w-bruise">night</span>
+          <span class="w-blood bleed">remembers.<span class="drips" aria-hidden="true"><i style="left:12%;--w:7px;--h:26px;--d:8s;--delay:1.1s"></i><i style="left:44%;--w:9px;--h:38px;--d:9.2s;--delay:2.6s"></i><i style="left:78%;--w:6px;--h:20px;--d:7.4s;--delay:.4s"></i></span></span>
+        </div>
+
+        <p class="lede"><strong class="w-blood">Threnody</strong> is an adaptive <strong class="w-rot">horror</strong> entity for Minecraft. It watches how you <strong class="w-bone">survive</strong>, it <strong class="w-ember">remembers</strong> every encounter, and it becomes something <strong class="w-blood">worse</strong> each time it fails to reach you.</p>
+
         <div class="actions">
-          <a class="button primary" href="https://github.com/SUSLImc/threnody/releases/latest"><span>Download the mod</span><span aria-hidden="true">↗</span></a>
-          <a class="button ghost" href="#escalation"><span>See what it becomes</span></a>
+          <a class="button primary" href="https://github.com/SUSLImc/threnody/releases/latest"><i>Download the mod</i><i aria-hidden="true">↗</i></a>
+          <a class="button ghost" href="#escalation"><i>See what it becomes</i></a>
         </div>
       </div>
+
       <aside class="monitor" aria-label="Entity monitor">
         <div class="monitor-head"><b>Encounter monitor</b><span class="live">tracking</span></div>
-        <h2>Something is<br>still listening.</h2>
+        <h2><span class="w-bone">Something is</span><br><span class="w-blood bleed">still listening.<span class="drips" aria-hidden="true"><i style="left:20%;--w:6px;--h:20px;--d:8.6s;--delay:1.4s"></i><i style="left:62%;--w:8px;--h:30px;--d:7.6s;--delay:3.1s"></i></span></span></h2>
         <p>Night cycle detected. Player memory online. Dawn is the only known exit.</p>
         <div class="wave" aria-hidden="true"><i style="animation-delay:0s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.4s"></i><i style="animation-delay:.5s"></i><i style="animation-delay:.6s"></i><i style="animation-delay:.7s"></i><i style="animation-delay:.8s"></i><i style="animation-delay:.9s"></i><i style="animation-delay:1s"></i><i style="animation-delay:1.1s"></i></div>
         <div class="monitor-foot"><span>THR / 001</span><span>DO NOT LOOK BACK</span></div>
@@ -301,18 +373,31 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 
   <div class="marquee" aria-hidden="true">
     <div>
-      <span>It remembers <b>·</b> It learns <b>·</b> It follows <b>·</b> It does not forgive <b>·</b> It remembers <b>·</b> It learns <b>·</b> It follows <b>·</b> It does not forgive <b>·</b></span>
-      <span>It remembers <b>·</b> It learns <b>·</b> It follows <b>·</b> It does not forgive <b>·</b> It remembers <b>·</b> It learns <b>·</b> It follows <b>·</b> It does not forgive <b>·</b></span>
+      <p><span class="w-blood">It remembers</span><b>·</b><span class="w-rot">It learns</span><b>·</b><span class="w-bruise">It follows</span><b>·</b><span class="w-ember">It does not forgive</span><b>·</b><span class="w-bone">It is already inside</span><b>·</b></p>
+      <p><span class="w-blood">It remembers</span><b>·</b><span class="w-rot">It learns</span><b>·</b><span class="w-bruise">It follows</span><b>·</b><span class="w-ember">It does not forgive</span><b>·</b><span class="w-bone">It is already inside</span><b>·</b></p>
     </div>
+  </div>
+  <div class="gore" aria-hidden="true">
+    <span></span>
+    <span class="drips" style="position:absolute;left:0;right:0;top:2px;height:0;background:none;box-shadow:none">
+      <i style="left:6%;--w:8px;--h:34px;--d:9s;--delay:.5s"></i>
+      <i style="left:19%;--w:6px;--h:22px;--d:8s;--delay:2.2s"></i>
+      <i style="left:31%;--w:10px;--h:46px;--d:10s;--delay:1.3s"></i>
+      <i style="left:44%;--w:7px;--h:28px;--d:8.6s;--delay:3.5s"></i>
+      <i style="left:57%;--w:9px;--h:40px;--d:9.4s;--delay:.8s"></i>
+      <i style="left:69%;--w:6px;--h:20px;--d:7.8s;--delay:2.9s"></i>
+      <i style="left:81%;--w:11px;--h:52px;--d:10.6s;--delay:1.9s"></i>
+      <i style="left:93%;--w:7px;--h:26px;--d:8.4s;--delay:4.1s"></i>
+    </span>
   </div>
 
   <section style="padding-bottom:0">
     <div class="wrap">
       <div class="stats reveal">
-        <div class="stat"><b>08</b><span>custom animations</span></div>
-        <div class="stat"><b>05</b><span>tiers of dread</span></div>
-        <div class="stat"><b>03</b><span>judgment tiers</span></div>
-        <div class="stat"><b>47.x</b><span>Forge line</span></div>
+        <div class="stat"><b class="w-blood">08</b><span>custom animations</span></div>
+        <div class="stat"><b class="w-ember">05</b><span>tiers of dread</span></div>
+        <div class="stat"><b class="w-bruise">03</b><span>judgment tiers</span></div>
+        <div class="stat"><b class="w-rot">47.x</b><span>Forge line</span></div>
       </div>
     </div>
   </section>
@@ -322,7 +407,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
       <div class="head reveal">
         <div>
           <div class="eyebrow">The escalation</div>
-          <h2 class="title">It gets worse.<br><em>Every single night.</em></h2>
+          <h2 class="title"><span class="w-bone">It gets</span> <span class="w-blood bleed shine">worse.<span class="drips" aria-hidden="true"><i style="left:16%;--w:9px;--h:40px;--d:8s;--delay:.7s"></i><i style="left:52%;--w:12px;--h:58px;--d:9.4s;--delay:2.3s"></i><i style="left:82%;--w:7px;--h:26px;--d:7.6s;--delay:3.8s"></i></span></span><br><span class="w-bruise">Every</span> <span class="w-rot">single</span> <span class="w-ember">night.</span></h2>
         </div>
         <p class="intro">Threnody does not stay the same thing that found you. The longer a hunt continues, the further it drifts from anything that should be walking around your world — in how it moves, how it sounds, and what it looks like when the light finally catches it.</p>
       </div>
@@ -335,11 +420,10 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
             <div class="meter"><i style="--level:15%"></i></div>
           </div>
           <div>
-            <h3>You think you imagined it</h3>
+            <h3><span class="w-bone">You think you</span> <span class="w-ash">imagined it</span></h3>
             <p>It keeps its distance and lets you work. Nothing chases you. Something is simply standing where nothing should be standing, and it is gone when you look again.</p>
             <span class="look">Appearance — a gaunt silhouette, proportions slightly wrong, eyes a dull ember.</span>
           </div>
-          <div></div>
         </article>
 
         <article class="tier reveal" style="--t:.3">
@@ -349,11 +433,10 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
             <div class="meter"><i style="--level:35%"></i></div>
           </div>
           <div>
-            <h3>It stops walking upright</h3>
+            <h3><span class="w-bone">It stops walking</span> <span class="w-rust">upright</span></h3>
             <p>Movement turns fast and wrong. It drops low, climbs the surfaces you thought were walls, and folds itself through gaps you assumed were safe.</p>
             <span class="look">Appearance — limbs lengthen, the jaw hangs open, the skin darkens and splits with veins.</span>
           </div>
-          <div></div>
         </article>
 
         <article class="tier reveal" style="--t:.55">
@@ -363,11 +446,10 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
             <div class="meter"><i style="--level:58%"></i></div>
           </div>
           <div>
-            <h3>Your walls stop counting</h3>
+            <h3><span class="w-bone">Your walls stop</span> <span class="w-rot bleed">counting<span class="drips" aria-hidden="true"><i style="left:30%;--w:7px;--h:24px;--d:8.8s;--delay:1.6s"></i></span></span></h3>
             <p>It stops going around your defenses and starts going through them, tearing a path toward the last place it knew you were standing.</p>
             <span class="look">Appearance — larger, heavier, hide blackened, veins beginning to glow from underneath.</span>
           </div>
-          <div></div>
         </article>
 
         <article class="tier reveal" style="--t:.8">
@@ -377,11 +459,10 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
             <div class="meter"><i style="--level:80%"></i></div>
           </div>
           <div>
-            <h3>It takes the light with it</h3>
+            <h3><span class="w-bone">It takes the</span> <span class="w-bruise">light</span> <span class="w-bone">with it</span></h3>
             <p>It is faster than you now, and it drags the darkness along behind it. Running is no longer a plan; it is just the thing you do before it reaches you.</p>
             <span class="look">Appearance — burning eyes, bared teeth, glow bleeding through every crack in the body.</span>
           </div>
-          <div></div>
         </article>
 
         <article class="tier reveal" style="--t:1">
@@ -391,11 +472,10 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
             <div class="meter"><i style="--level:100%"></i></div>
           </div>
           <div>
-            <h3>Whatever is left is not stalking you</h3>
+            <h3><span class="w-bone">Whatever is left is not</span> <span class="w-blood bleed shine">stalking you<span class="drips" aria-hidden="true"><i style="left:18%;--w:9px;--h:38px;--d:7.4s;--delay:.9s"></i><i style="left:56%;--w:11px;--h:50px;--d:9s;--delay:2.7s"></i><i style="left:86%;--w:6px;--h:22px;--d:8.2s;--delay:4.2s"></i></span></span></h3>
             <p>Every earlier trait at once — the climbing, the breaking, the speed — with nothing held back and nothing left of the patience it started with.</p>
             <span class="look">Appearance — the largest form, soul-lit and fully corrupted, still burning in total darkness.</span>
           </div>
-          <div></div>
         </article>
       </div>
     </div>
@@ -406,17 +486,17 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
       <div class="head reveal">
         <div>
           <div class="eyebrow">Under the surface</div>
-          <h2 class="title">Built for tension,<br><em>not for noise.</em></h2>
+          <h2 class="title"><span class="w-bone">Built for</span> <span class="w-bruise">tension,</span><br><span class="w-bone">not for</span> <span class="w-ash">noise.</span></h2>
         </div>
         <p class="intro">Everything that makes it frightening runs on the server, throttled and predictable, so a horror mod never becomes a performance problem.</p>
       </div>
       <div class="features">
-        <article class="feature reveal"><div class="feature-no">01 / MEMORY</div><h3>It remembers you</h3><p>Every encounter is written into persistent player data, capped by capacity and aged out on a timer you control.</p></article>
-        <article class="feature reveal"><div class="feature-no">02 / PRIORITY</div><h3>It picks favourites</h3><p>Whoever it has met most recently, and most violently, climbs to the top of its list. Hiding once is not the same as being forgotten.</p></article>
-        <article class="feature reveal"><div class="feature-no">03 / WORLD</div><h3>The world is a route</h3><p>Climbing, squeezing and controlled block breaking let it pressure your defenses without turning into unrestricted griefing.</p></article>
-        <article class="feature reveal"><div class="feature-no">04 / MOTION</div><h3>It moves like something wrong</h3><p>A custom skeleton with a hinged jaw and oversized limbs drives eight hand-authored animations, from a patient idle to a full crawl.</p></article>
-        <article class="feature reveal"><div class="feature-no">05 / LAYERS</div><h3>Two animation layers</h3><p>A looping movement controller carries locomotion while a triggered action layer plays attacks, screams and transformations over the top.</p></article>
-        <article class="feature reveal"><div class="feature-no">06 / LIGHT</div><h3>The eyes keep burning</h3><p>Each tier has its own texture and emissive glow mask, so eyes, teeth and veins grow brighter the longer it survives.</p></article>
+        <article class="feature reveal"><div class="feature-no">01 / MEMORY</div><h3 class="w-blood">It remembers you</h3><p>Every encounter is written into persistent player data, capped by capacity and aged out on a timer you control.</p></article>
+        <article class="feature reveal"><div class="feature-no">02 / PRIORITY</div><h3 class="w-ember">It picks favourites</h3><p>Whoever it has met most recently, and most violently, climbs to the top of its list. Hiding once is not the same as being forgotten.</p></article>
+        <article class="feature reveal"><div class="feature-no">03 / WORLD</div><h3 class="w-rot">The world is a route</h3><p>Climbing, squeezing and controlled block breaking let it pressure your defenses without turning into unrestricted griefing.</p></article>
+        <article class="feature reveal"><div class="feature-no">04 / MOTION</div><h3 class="w-bruise">It moves like something wrong</h3><p>A custom skeleton with a hinged jaw and oversized limbs drives eight hand-authored animations, from a patient idle to a full crawl.</p></article>
+        <article class="feature reveal"><div class="feature-no">05 / LAYERS</div><h3 class="w-rust">Two animation layers</h3><p>A looping movement controller carries locomotion while a triggered action layer plays attacks, screams and transformations over the top.</p></article>
+        <article class="feature reveal"><div class="feature-no">06 / LIGHT</div><h3 class="w-bone">The eyes keep burning</h3><p>Each tier has its own texture and emissive glow mask, so eyes, teeth and veins grow brighter the longer it survives.</p></article>
       </div>
     </div>
   </section>
@@ -426,17 +506,17 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
       <div class="head reveal">
         <div>
           <div class="eyebrow">The covenant</div>
-          <h2 class="title">Cheat, and it<br><em>comes for you.</em></h2>
+          <h2 class="title"><span class="w-rot">Cheat,</span> <span class="w-bone">and it</span><br><span class="w-blood bleed shine">comes for you.<span class="drips" aria-hidden="true"><i style="left:10%;--w:10px;--h:46px;--d:8.4s;--delay:.5s"></i><i style="left:37%;--w:7px;--h:28px;--d:9.8s;--delay:2.4s"></i><i style="left:63%;--w:12px;--h:60px;--d:7.8s;--delay:1.1s"></i><i style="left:88%;--w:8px;--h:34px;--d:9.2s;--delay:3.6s"></i></span></span></h2>
         </div>
         <p class="intro">Threnody treats survival as a binding agreement. Slip into creative mode or conjure items with commands and it drags you back — then it stops waiting for nightfall.</p>
       </div>
       <div class="rungs">
-        <article class="rung reveal"><span class="rung-no">First offense</span><div><h3>Something noticed</h3><p>You are pulled back into survival, the light drains out of the world, and a warning arrives telling you that you were seen.</p></div></article>
-        <article class="rung reveal"><span class="rung-no">Second offense</span><div><h3>You are marked</h3><p>Blindness and nausea set in, and any Threnody within range is enraged and redirected straight to your position.</p></div></article>
-        <article class="rung reveal"><span class="rung-no">Third and beyond</span><div><h3>The covenant is broken</h3><p>Weakness takes hold and Threnody is summoned beside you — enraged, ignoring daylight, no longer interested in stalking.</p></div></article>
+        <article class="rung reveal"><span class="rung-no">First offense</span><div><h3 class="w-bone">Something noticed</h3><p>You are pulled back into survival, the light drains out of the world, and a warning arrives telling you that you were seen.</p></div></article>
+        <article class="rung reveal"><span class="rung-no">Second offense</span><div><h3 class="w-rust">You are marked</h3><p>Blindness and nausea set in, and any Threnody within range is enraged and redirected straight to your position.</p></div></article>
+        <article class="rung reveal"><span class="rung-no">Third and beyond</span><div><h3 class="w-blood bleed">The covenant is broken<span class="drips" aria-hidden="true"><i style="left:24%;--w:8px;--h:30px;--d:8s;--delay:1.5s"></i><i style="left:66%;--w:6px;--h:22px;--d:9.6s;--delay:3.2s"></i></span></h3><p>Weakness takes hold and Threnody is summoned beside you — enraged, ignoring daylight, no longer interested in stalking.</p></div></article>
       </div>
       <div class="verdict reveal">
-        <p><strong>Every transgression is remembered.</strong> Offenses are written into persistent player data, push you above everyone else on its list, and are only forgiven after the time you configure. Operators can be exempted, and the whole system can be switched off.</p>
+        <p><strong class="w-blood">Every transgression is remembered.</strong> Offenses are written into persistent player data, push you above everyone else on its list, and are only forgiven after the time you configure. Operators can be exempted, and the whole system can be switched off.</p>
       </div>
     </div>
   </section>
@@ -446,7 +526,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
       <div class="head reveal">
         <div>
           <div class="eyebrow">Development log</div>
-          <h2 class="title">Everything that<br><em>has changed.</em></h2>
+          <h2 class="title"><span class="w-bone">Everything that</span><br><span class="w-ember bleed">has changed.<span class="drips" aria-hidden="true"><i style="left:22%;--w:8px;--h:32px;--d:8.6s;--delay:1.2s"></i><i style="left:70%;--w:10px;--h:44px;--d:9.4s;--delay:2.9s"></i></span></span></h2>
         </div>
         <p class="intro">A full history of the build, from the first working toolchain to the release you can download today.</p>
       </div>
@@ -454,7 +534,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
       <div class="log reveal">
         <article class="entry now">
           <div class="entry-top">
-            <span class="entry-ver">v0.1.0 — The First Night</span>
+            <span class="entry-ver w-blood">v0.1.0 — The First Night</span>
             <span class="entry-date">20 August 2026</span>
             <span class="badge">Latest release</span>
           </div>
@@ -469,7 +549,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 
         <article class="entry">
           <div class="entry-top">
-            <span class="entry-ver">Build 0.0.4 — Motion &amp; Judgment</span>
+            <span class="entry-ver w-ember">Build 0.0.4 — Motion &amp; Judgment</span>
             <span class="entry-date">20 August 2026</span>
           </div>
           <p class="entry-sum">The entity stopped borrowing vanilla animation and got a body of its own — plus a reason to hate cheaters.</p>
@@ -486,7 +566,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 
         <article class="entry">
           <div class="entry-top">
-            <span class="entry-ver">Build 0.0.3 — Presentation</span>
+            <span class="entry-ver w-bruise">Build 0.0.3 — Presentation</span>
             <span class="entry-date">20 August 2026</span>
           </div>
           <p class="entry-sum">The project got a face: a real site and documentation that matches what the mod actually does.</p>
@@ -499,7 +579,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 
         <article class="entry">
           <div class="entry-top">
-            <span class="entry-ver">Build 0.0.2 — Core systems</span>
+            <span class="entry-ver w-rot">Build 0.0.2 — Core systems</span>
             <span class="entry-date">20 August 2026</span>
           </div>
           <p class="entry-sum">The entity became a real creature instead of a registered name.</p>
@@ -515,7 +595,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
 
         <article class="entry">
           <div class="entry-top">
-            <span class="entry-ver">Build 0.0.1 — Foundation</span>
+            <span class="entry-ver w-ash">Build 0.0.1 — Foundation</span>
             <span class="entry-date">20 August 2026</span>
           </div>
           <p class="entry-sum">The repository could not build at all. That was the first thing to fix.</p>
@@ -535,13 +615,13 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
       <div class="install reveal">
         <div>
           <div class="eyebrow">Deployment briefing</div>
-          <h2>Invite it in.</h2>
+          <h2><span class="w-bone">Invite it</span> <span class="w-blood bleed">in.<span class="drips" aria-hidden="true"><i style="left:30%;--w:8px;--h:30px;--d:8.2s;--delay:1.3s"></i></span></span></h2>
           <p>Install Threnody and GeckoLib on the client and the server, then let the first night begin.</p>
-          <a class="button primary" href="https://github.com/SUSLImc/threnody#readme"><span>Full documentation</span></a>
+          <a class="button primary" href="https://github.com/SUSLImc/threnody#readme"><i>Full documentation</i></a>
         </div>
         <div class="steps">
-          <div class="step"><b>01</b><p>Install <strong>Forge 47.x</strong> for Minecraft Java 1.20.1.</p></div>
-          <div class="step"><b>02</b><p>Add <a href="https://www.curseforge.com/minecraft/mc-mods/geckolib"><strong>GeckoLib 4.8.4+</strong></a> to the <code>mods</code> folder.</p></div>
+          <div class="step"><b>01</b><p>Install <strong class="w-ember">Forge 47.x</strong> for Minecraft Java 1.20.1.</p></div>
+          <div class="step"><b>02</b><p>Add <a href="https://www.curseforge.com/minecraft/mc-mods/geckolib"><strong class="w-rot">GeckoLib 4.8.4+</strong></a> to the <code>mods</code> folder.</p></div>
           <div class="step"><b>03</b><p>Drop <code>threnody-0.1.0.jar</code> into <code>mods</code> on both sides.</p></div>
           <div class="step"><b>04</b><p>Launch once to generate <code>config/threnody-common.toml</code>.</p></div>
           <div class="step"><b>05</b><p>Wait for dark — or test with <code>/summon threnody:threnody</code>.</p></div>
@@ -554,7 +634,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 48px;color:var(--muted);f
     <div class="wrap config">
       <div class="reveal">
         <div class="eyebrow">Tuning the fear</div>
-        <h2 class="title">Your world.<br><em>Your threshold.</em></h2>
+        <h2 class="title"><span class="w-bone">Your world.</span><br><span class="w-blood">Your threshold.</span></h2>
         <p>Keep the pressure cinematic, or make survival close to impossible. Spawning, memory, decay, block breaking and every part of the judgment system are yours to set.</p>
         <ul class="clist">
           <li>Night-only spawning with a configurable light threshold</li>
@@ -588,11 +668,17 @@ judgmentForgivenessMinutes = 30</pre>
   <section class="credit">
     <div class="wrap reveal">
       <span class="eyebrow">Created by</span>
-      <h2>Susli76</h2>
-      <p>Threnody is designed, built and maintained by Susli76. If you want to see it in motion, that is where the clips live.</p>
+      <h2 class="bleed shine">Susli76<span class="drips" aria-hidden="true">
+        <i style="left:8%;--w:9px;--h:40px;--d:7.6s;--delay:.4s"></i>
+        <i style="left:28%;--w:7px;--h:26px;--d:9.2s;--delay:2.2s"></i>
+        <i style="left:48%;--w:11px;--h:54px;--d:8.4s;--delay:1.1s"></i>
+        <i style="left:68%;--w:6px;--h:22px;--d:10s;--delay:3.3s"></i>
+        <i style="left:88%;--w:9px;--h:38px;--d:8.8s;--delay:1.8s"></i>
+      </span></h2>
+      <p>Threnody is designed, built and maintained by <strong class="w-blood">Susli76</strong>. If you want to see it in motion, that is where the clips live.</p>
       <div class="socials">
-        <a class="button primary" href="https://www.tiktok.com/@susli.ae" rel="noopener"><span>@susli.ae on TikTok</span><span aria-hidden="true">↗</span></a>
-        <a class="button ghost" href="https://github.com/SUSLImc/threnody" rel="noopener"><span>Source on GitHub</span></a>
+        <a class="button primary" href="https://www.tiktok.com/@susli.ae" rel="noopener"><i>@susli.ae on TikTok</i><i aria-hidden="true">↗</i></a>
+        <a class="button ghost" href="https://github.com/SUSLImc/threnody" rel="noopener"><i>Source on GitHub</i></a>
       </div>
     </div>
   </section>
@@ -601,7 +687,7 @@ judgmentForgivenessMinutes = 30</pre>
 
 <footer>
   <div class="wrap foot">
-    <span>Threnody · adaptive horror for Minecraft Forge 1.20.1 · built by Susli76</span>
+    <span>Threnody · adaptive horror for Minecraft Forge 1.20.1 · built by <span class="w-blood">Susli76</span></span>
     <a href="https://www.tiktok.com/@susli.ae" rel="noopener">tiktok.com/@susli.ae ↗</a>
   </div>
 </footer>
@@ -612,13 +698,10 @@ judgmentForgivenessMinutes = 30</pre>
   var header = document.getElementById('top');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Letter-by-letter reveal of the wordmark
-  var letters = document.querySelectorAll('.wordmark i');
-  letters.forEach(function (letter, index) {
-    letter.style.animationDelay = (0.08 * index + 0.15) + 's';
+  document.querySelectorAll('.wordmark > i').forEach(function (letter, index) {
+    letter.style.animationDelay = (0.09 * index + 0.15) + 's, ' + (index * -0.4) + 's';
   });
 
-  // The page itself grows darker and louder the deeper you scroll
   var ticking = false;
   function onScroll() {
     if (ticking) return;
@@ -634,7 +717,6 @@ judgmentForgivenessMinutes = 30</pre>
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // Staggered reveal for every animated block
   var targets = document.querySelectorAll('.reveal');
   if (!('IntersectionObserver' in window) || reduced) {
     targets.forEach(function (target) { target.classList.add('in'); });
@@ -644,9 +726,10 @@ judgmentForgivenessMinutes = 30</pre>
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry, index) {
       if (!entry.isIntersecting) return;
-      var delay = entry.target.classList.contains('feature')
-        || entry.target.classList.contains('tier') ? index * 90 : 0;
-      setTimeout(function () { entry.target.classList.add('in'); }, delay);
+      var stagger = entry.target.classList.contains('feature')
+        || entry.target.classList.contains('tier')
+        || entry.target.classList.contains('rung') ? index * 90 : 0;
+      setTimeout(function () { entry.target.classList.add('in'); }, stagger);
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.16, rootMargin: '0px 0px -60px 0px' });
